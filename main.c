@@ -103,41 +103,34 @@ void go_sha256(char *std, t_gen *g)
 	    if(sha256((uint8_t *)std, len, g) == -1)
 	    	return;
 	    uint8_t *p;
- 
-    // display result
- 
-	 uint32_t digest[8] = { g->h0, g->h1, g->h2, g->h3, g->h4, g->h5, g->h6, g->h7 };
-
-
-//	 char *save;
-
-//	 save = ft_itoa_base(42,16);
-//	 ft_putstr(save);
-//	 free(save);
-/*	 save = unsigned_itoa_base(digest[1],16);
+/*	 char *save;
+	 save = unsigned_itoa_base(g->h0,16);
 	 ft_putstr(save);
 	 free(save);
-	 save = unsigned_itoa_base(digest[2],16);
+	 save = unsigned_itoa_base(g->h0,16);
 	 ft_putstr(save);
 	 free(save);
-	 save = unsigned_itoa_base(digest[3],16);
+	 save = unsigned_itoa_base(g->h0,16);
 	 ft_putstr(save);
 	 free(save);
-	 save = unsigned_itoa_base(digest[4],16);
+	 save = unsigned_itoa_base(g->h0,16);
 	 ft_putstr(save);
 	 free(save);
-	 save = unsigned_itoa_base(digest[5],16);
+	 save = unsigned_itoa_base(g->h0,16);
 	 ft_putstr(save);
 	 free(save);
-	 save = unsigned_itoa_base(digest[6],16);
+	 save = unsigned_itoa_base(g->h0,16);
 	 ft_putstr(save);
-	 free(save);*/
+	 free(save);
+	 save = unsigned_itoa_base(g->h0,16);
+	 ft_putstr(save);
+	 free(save);
 
-//	 ft_putstr("\n");
+	 ft_putstr("\n");*/
 
-
-	 printf("%s\n",unsigned_itoa_base(digest[0],16));
-    	printf("\n\nDigest: %x%x%x%x%x%x%x%x\n", digest[0], digest[1], digest[2], digest[3], digest[4], digest[5], digest[6], digest[7]);
+	    uint32_t digest[8] = { g->h0, g->h1, g->h2, g->h3, g->h4, g->h5, g->h6, g->h7 };
+//	 printf("%s\n",ft_itoa_base(digest[1],16));
+    	printf("%x%x%x%x%x%x%x%x", digest[0], digest[1], digest[2], digest[3], digest[4], digest[5], digest[6], digest[7]);
 
 }
 
@@ -175,28 +168,17 @@ int main(int argc, char **argv) {
     	fake_gnl_all(&red, 0);
     	if(confirm == 1)
     	{
-    		size_t len = ft_strlen(red);
-		    if(md5((uint8_t *)red, len, &g) == -1)
-		    	return(-1);
-		    ft_putstr("\n");
-		    ft_putstr(add0(ft_itoa_base(revers_uint32(g.h0), 16)));
-		    ft_putstr(add0(ft_itoa_base(revers_uint32(g.h1), 16)));
-		    ft_putstr(add0(ft_itoa_base(revers_uint32(g.h2), 16)));
-		    ft_putstr(add0(ft_itoa_base(revers_uint32(g.h3), 16)));
+    		go_md5(red, &g);
 	    }
-	    	else if(confirm == 2)
-	    	{
-	    		size_t len = ft_strlen(red);
-			    if(sha256((uint8_t *)red, len, &g) == -1)
-			    	return(-1);
-			    uint32_t digest[8] = { g.h0, g.h1, g.h2, g.h3, g.h4, g.h5, g.h6, g.h7 };
-		    	printf("\n\nDigest: %x%x%x%x%x%x%x%x\n", digest[0], digest[1], digest[2], digest[3], digest[4], digest[5], digest[6], digest[7]);
-	    	}
+	    else if(confirm == 2)
+	    {
+	    	go_sha256(red, &g);
+	    }
     }
 
 
    
-    if(ft_strcmp(argv[1], "md5") == 0)
+    if(ft_strcmp(argv[1], "md5") == 0 || ft_strcmp(argv[1], "sha256") == 0)
     {
 	    char *msg = argv[2];
 	    g.i = 2;
@@ -229,7 +211,10 @@ int main(int argc, char **argv) {
 	    	fake_gnl_all(&std, 0);
 	    	if(g.f_p)
 	    		printf("%s", std);
-	    	go_md5(std, &g);
+	    	if(ft_strcmp(argv[1], "sha256") == 0)
+	    		go_sha256(std, &g);
+	    	else
+	    		go_md5(std, &g);
 	    	printf("\n");
 	    }
 	    g.pars = 2;
@@ -251,18 +236,26 @@ int main(int argc, char **argv) {
 	    			{
 	    				if(!g.f_q)
 	    				{
-		    				ft_putstr("MD5 (\"");
+	    					if(ft_strcmp(argv[1], "sha256") == 0)
+		    					ft_putstr("SHA256 (\"");
+		    				else
+		    					ft_putstr("MD5 (\"");
 		    				ft_putstr(argv[g.pars]);
 		    				ft_putstr("\") = ");
 	    				}
-	    				go_md5(argv[g.pars], &g);
+	    				if(ft_strcmp(argv[1], "sha256") == 0)
+	    					go_sha256(argv[g.pars], &g);
+	    				else
+	    					go_md5(argv[g.pars], &g);
 	    			
 	    					ft_putchar('\n');
 	    			}
 	    			else
 	    			{
-	    				
-	    				go_md5(argv[g.pars], &g);
+	    				if(ft_strcmp(argv[1], "sha256") == 0)
+	    					go_sha256(argv[g.pars], &g);
+	    				else
+	    					go_md5(argv[g.pars], &g);
 
 	    				if(!g.f_q)
 	    				{
@@ -289,7 +282,10 @@ int main(int argc, char **argv) {
 	    	int fd;
 	    	if((fd = open(argv[g.pars], O_RDONLY)) < 0)
 	    	{
-	    		ft_putstr("ft_ssl: md5: ");
+	    		if(ft_strcmp(argv[1], "sha256") == 0)
+	    			ft_putstr("ft_ssl: sha256: ");
+	    		else
+	    			ft_putstr("ft_ssl: md5: ");
 	    		ft_putstr(argv[g.pars]);
 	    		ft_putstr(": No such file or directory\n");
 	    		g.pars++;
@@ -301,7 +297,10 @@ int main(int argc, char **argv) {
 	    			{
 	    				if(!g.f_q)
 	    				{
-		    				ft_putstr("MD5 (");
+	    					if(ft_strcmp(argv[1], "sha256") == 0)
+		    					ft_putstr("SHA256 (");
+		    				else
+		    					ft_putstr("MD5 (");
 		    				ft_putstr(argv[g.pars]);
 		    				ft_putstr(") = ");
 	    				}
