@@ -93,7 +93,6 @@ void go_md5(char *std, t_gen *g)
 	size_t len = ft_strlen(std);
 	    if(md5((uint8_t *)std, len, g) == -1)
 	    	return;
-	    uint8_t *p;
  
     char *tmp;
 
@@ -121,7 +120,6 @@ void go_sha256(char *std, t_gen *g)
 	size_t len = ft_strlen(std);
 	    if(sha256((uint8_t *)std, len, g) == -1)
 	    	return;
-	    uint8_t *p;
 	char *tmp;
 
 	tmp = unsigned_itoa_base(g->h0, 16);
@@ -206,7 +204,6 @@ int main(int argc, char **argv) {
    
     if(ft_strcmp(argv[1], "md5") == 0 || ft_strcmp(argv[1], "sha256") == 0)
     {
-	    char *msg = argv[2];
 	    g.i = 2;
 	    g.f_p = 0;
 	    g.f_q = 0;
@@ -376,6 +373,5 @@ int main(int argc, char **argv) {
 
 	}
     
- 	while(1);
     return 0;
 }
