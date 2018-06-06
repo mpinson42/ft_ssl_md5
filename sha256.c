@@ -26,7 +26,7 @@ int sha256(uint8_t *init_msg, size_t len, t_gen *g)
 	g->h6 = 0x1f83d9ab;
 	g->h7 = 0x5be0cd19;
 
-	g->new_len = len*8 + 1;
+	g->new_len = len + 1;
   
     while(g->new_len%64!=60)
     	g->new_len++;

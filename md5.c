@@ -23,12 +23,18 @@
         0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
         0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
 
+uint32_t leftrotate(uint32_t x, uint32_t c)
+{
+    return ((((x) << (c)) | ((x) >> (32 - (c)))));
+}
+
+
 int md5(uint8_t *init_msg, size_t len, t_gen *g) {
     g->h0 = 0x67452301;
     g->h1 = 0xefcdab89;
     g->h2 = 0x98badcfe;
     g->h3 = 0x10325476;
-    g->new_len = len*8 + 1;
+    g->new_len = len + 1;
   
     while(g->new_len%64!=56)
     	g->new_len++;
@@ -65,7 +71,7 @@ int md5(uint8_t *init_msg, size_t len, t_gen *g) {
             g->temp = g->d;
             g->d = g->c;
             g->c = g->b;
-            g->b = g->b + (((g->a + g->f + k[g->i] + g->w[g->g]) << (r[g->i])) | ((g->a + g->f + k[g->i] + g->w[g->g]) >> (32 - (r[g->i]))));
+            g->b = g->b + leftrotate((g->a + g->f + k[g->i] + g->w[g->g]), r[g->i]);
             g->a = g->temp;
             g->i++;
         }

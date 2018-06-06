@@ -44,6 +44,11 @@ typedef struct s_gen
 	uint32_t f_r;
 	uint32_t f_s;
 
+	char *stdin;
+
+	int nb_file;
+	int pars;
+
 
 }				t_gen;
 
