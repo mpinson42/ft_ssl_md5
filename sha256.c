@@ -30,7 +30,7 @@ int sha256(uint8_t *init_msg, size_t len, t_gen *g)
   
     while(g->new_len%64!=60)
     	g->new_len++;
-    if(!(g->msg = malloc(g->new_len + 64)))
+    if(!(g->msg = malloc(g->new_len * 8 + 64)))
     	return (-1);
     g->msg = ft_memset(g->msg, 0,g->new_len + 64);
     ft_memcpy(g->msg, init_msg, len);
@@ -104,6 +104,6 @@ int sha256(uint8_t *init_msg, size_t len, t_gen *g)
     	g->offset += 64;
     }
 
-    //free(g->msg);
+    free(g->msg);
 	return(0);
 }

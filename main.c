@@ -41,6 +41,7 @@ void fake_gnl(char **ptr)
 	char c[2];
 	int verif;
 	char *str;
+	char *tmp;
 
 	verif = 42;
 	c[1] = 0;
@@ -54,7 +55,9 @@ void fake_gnl(char **ptr)
 		{
 			break;
 		}
+		tmp = str;
 		str = ft_strjoin(str,c);
+		free(tmp);
 	}
 	ptr[0] = str;
 
@@ -65,6 +68,7 @@ void fake_gnl_all(char **ptr, int fd)
 	char c[2];
 	int verif;
 	char *str;
+	char *tmp;
 
 	c[1] = 0;
 	verif = 42;
@@ -76,7 +80,9 @@ void fake_gnl_all(char **ptr, int fd)
 		{
 			break;
 		}
+		tmp = str;
 		str = ft_strjoin(str,c);
+		free(tmp);
 	}
 	ptr[0] = str;
 
@@ -89,12 +95,25 @@ void go_md5(char *std, t_gen *g)
 	    	return;
 	    uint8_t *p;
  
-    // display result
- 
-	   ft_putstr(add0(ft_itoa_base(revers_uint32(g->h0), 16)));
-	    ft_putstr(add0(ft_itoa_base(revers_uint32(g->h1), 16)));
-	    ft_putstr(add0(ft_itoa_base(revers_uint32(g->h2), 16)));
-	    ft_putstr(add0(ft_itoa_base(revers_uint32(g->h3), 16)));
+    char *tmp;
+
+	tmp = unsigned_itoa_base(revers_uint32(g->h0), 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+
+	tmp = unsigned_itoa_base(revers_uint32(g->h1), 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = unsigned_itoa_base(revers_uint32(g->h2), 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = unsigned_itoa_base(revers_uint32(g->h3), 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
 }
 
 void go_sha256(char *std, t_gen *g)
@@ -103,34 +122,41 @@ void go_sha256(char *std, t_gen *g)
 	    if(sha256((uint8_t *)std, len, g) == -1)
 	    	return;
 	    uint8_t *p;
-/*	 char *save;
-	 save = unsigned_itoa_base(g->h0,16);
-	 ft_putstr(save);
-	 free(save);
-	 save = unsigned_itoa_base(g->h0,16);
-	 ft_putstr(save);
-	 free(save);
-	 save = unsigned_itoa_base(g->h0,16);
-	 ft_putstr(save);
-	 free(save);
-	 save = unsigned_itoa_base(g->h0,16);
-	 ft_putstr(save);
-	 free(save);
-	 save = unsigned_itoa_base(g->h0,16);
-	 ft_putstr(save);
-	 free(save);
-	 save = unsigned_itoa_base(g->h0,16);
-	 ft_putstr(save);
-	 free(save);
-	 save = unsigned_itoa_base(g->h0,16);
-	 ft_putstr(save);
-	 free(save);
+	char *tmp;
 
-	 ft_putstr("\n");*/
+	tmp = unsigned_itoa_base(g->h0, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = unsigned_itoa_base(g->h1, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = unsigned_itoa_base(g->h2, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = unsigned_itoa_base(g->h3, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = unsigned_itoa_base(g->h4, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = unsigned_itoa_base(g->h5, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = unsigned_itoa_base(g->h6, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = unsigned_itoa_base(g->h7, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
 
-	    uint32_t digest[8] = { g->h0, g->h1, g->h2, g->h3, g->h4, g->h5, g->h6, g->h7 };
-//	 printf("%s\n",ft_itoa_base(digest[1],16));
-    	printf("%x%x%x%x%x%x%x%x", digest[0], digest[1], digest[2], digest[3], digest[4], digest[5], digest[6], digest[7]);
 
 }
 
@@ -210,12 +236,12 @@ int main(int argc, char **argv) {
 	    {
 	    	fake_gnl_all(&std, 0);
 	    	if(g.f_p)
-	    		printf("%s", std);
+	    		ft_putstr(std);
 	    	if(ft_strcmp(argv[1], "sha256") == 0)
 	    		go_sha256(std, &g);
 	    	else
 	    		go_md5(std, &g);
-	    	printf("\n");
+	    	ft_putstr("\n");
 	    }
 	    g.pars = 2;
 	    while(g.pars < argc)
@@ -304,14 +330,20 @@ int main(int argc, char **argv) {
 		    				ft_putstr(argv[g.pars]);
 		    				ft_putstr(") = ");
 	    				}
-	    				go_md5(g.stdin, &g);
+	    				if(ft_strcmp(argv[1], "sha256") == 0)
+	    					go_sha256(g.stdin, &g);
+	    				else
+	    					go_md5(g.stdin, &g);
 	    			
 	    					ft_putchar('\n');
 	    			}
 	    			else
 	    			{
 	    				
-	    				go_md5(g.stdin, &g);
+	    				if(ft_strcmp(argv[1], "sha256") == 0)
+	    					go_sha256(g.stdin, &g);
+	    				else
+	    					go_md5(g.stdin, &g);
 
 	    				if(!g.f_q)
 	    				{
@@ -344,6 +376,6 @@ int main(int argc, char **argv) {
 
 	}
     
- 
+ 	while(1);
     return 0;
 }

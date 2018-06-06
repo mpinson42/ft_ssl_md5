@@ -44,7 +44,6 @@ int					ft_uni_putstr(wchar_t *str);
 size_t				ft_uni_strlen(const wchar_t *s);
 char				*ft_pushback(char *str, int i, char c);
 int					ft_uni_putchar(wchar_t n);
-char				*unsigned_itoa_base(uintmax_t n, int base);
 int					get_next_line(int const fd, char **line);
 void				ft_free_strjoin(char **str, char *str2);
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
@@ -124,7 +123,7 @@ char				*ft_strmapi(char const *s, char(*f)(unsigned int, char));
 char				*ft_strrchr(const char *str, int c);
 char				*ft_itoa_base(intmax_t n, int base);
 char				*ft_strrealloc(char *str, size_t n);
-char				*unsigned_itoa_base(uintmax_t n, int base);
+char				*unsigned_itoa_base(uint32_t n, int base);
 int					ft_atoi_base(char *str, int base);
 
 #endif
