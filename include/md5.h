@@ -32,17 +32,23 @@ typedef struct s_gen
 
 	uint32_t *w;
 
-	uint8_t *msg;
+	unsigned char *msg;
 
 	int i;
-	uint32_t temp;
-	uint32_t bits_len;
+	uint32_t tmp;
+	uint32_t bits_init_msg_len;
 	int offset;
 
 	uint32_t f_p;
 	uint32_t f_q;
 	uint32_t f_r;
 	uint32_t f_s;
+	uint32_t tmp1;
+	uint32_t tmp2;
+	uint32_t tmp3;
+	uint32_t tmp4;
+	uint32_t maj;
+	uint32_t ch;
 
 	char *stdin;
 
@@ -52,7 +58,7 @@ typedef struct s_gen
 
 }				t_gen;
 
-        int md5(uint8_t *init_msg, size_t len, t_gen *g);
+       int md5(unsigned char *init_msg, size_t len, t_gen *g);
         int sha256(uint8_t *init_msg, size_t len, t_gen *g);
         uint32_t revers_uint32(uint32_t n);
         uint64_t revers_uint64(uint64_t n);
