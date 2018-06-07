@@ -1,6 +1,6 @@
 NAME = ft_ssl
 
-SRC = srcs/main.c srcs/md5.c srcs/sha256.c
+SRC = srcs/main.c srcs/md5.c srcs/sha256.c srcs/lib.c srcs/printing.c srcs/manang.c
 
 FLAGS = -Wall -Wextra -Werror
 
