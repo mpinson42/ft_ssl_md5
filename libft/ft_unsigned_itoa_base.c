@@ -6,7 +6,7 @@
 /*   By: mpinson <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/06 14:58:13 by mpinson           #+#    #+#             */
-/*   Updated: 2017/04/06 15:16:59 by mpinson          ###   ########.fr       */
+/*   Updated: 2018/06/07 21:02:34 by mpinson          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static char	*init(int *i)
 	return (cmp);
 }
 
-static char *free_str(char *str)
+static char	*free_str(char *str)
 {
 	char *tmp;
 

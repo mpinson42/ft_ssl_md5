@@ -76,4 +76,9 @@ void				rotate_s(t_gen *g, char **argv);
 void				no_ro_s(t_gen *g, char **argv);
 void				pars_entre(t_gen *g, int argc, char **argv);
 void				ft_bonus_ssl(t_gen *g, int confirm, char *red);
+int					sha224(unsigned char *init_msg, size_t len, t_gen *g);
+uint32_t			rigthrotat(uint32_t x, uint32_t n);
+void				go_sha224(char *std, t_gen *g);
+void				escap_norm(char *red);
+void				escape_norme2(t_gen *g, char **argv);
 #endif
