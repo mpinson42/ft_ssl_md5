@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpinson <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/06/07 17:51:45 by mpinson           #+#    #+#             */
-/*   Updated: 2018/06/07 17:57:18 by mpinson          ###   ########.fr       */
+/*   Created: 2018/06/19 17:13:11 by mpinson           #+#    #+#             */
+/*   Updated: 2018/06/19 17:14:07 by mpinson          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,75 +40,76 @@ uint32_t	leftrotate(uint32_t x, uint32_t c)
 	return (((x) << (c)) | ((x) >> (32 - (c))));
 }
 
-void md5_compress(t_gen *g, int i)
+void		md5_compress(t_gen *g, int i)
 {
 	if (i < 16)
-    {
-        g->f = (g->b & g->c) | ((~g->b) & g->d);
-        g->g = i;
-    }
-    else if (i < 32)
-    {
-        g->f = (g->d & g->b) | ((~g->d) & g->c);
-        g->g = (5*i + 1) % 16;
-    }
-    else if (i < 48)
-    {
-        g->f = g->b ^ g->c ^ g->d;
-        g->g = (3*i + 5) % 16;          
-    }
-    else
-    {
-        g->f = g->c ^ (g->b | (~g->d));
-        g->g = (7*i) % 16;
-    }
-    g->tmp = g->d;
-    g->d = g->c;
-    g->c = g->b;
-    g->b = g->b + leftrotate((g->a + g->f + g_k[i] + g->w[g->g]), g_r[i]);
-    g->a = g->tmp;
+	{
+		g->f = (g->b & g->c) | ((~g->b) & g->d);
+		g->g = i;
+	}
+	else if (i < 32)
+	{
+		g->f = (g->d & g->b) | ((~g->d) & g->c);
+		g->g = (5 * i + 1) % 16;
+	}
+	else if (i < 48)
+	{
+		g->f = g->b ^ g->c ^ g->d;
+		g->g = (3 * i + 5) % 16;
+	}
+	else
+	{
+		g->f = g->c ^ (g->b | (~g->d));
+		g->g = (7 * i) % 16;
+	}
+	g->tmp = g->d;
+	g->d = g->c;
+	g->c = g->b;
+	g->b = g->b + leftrotate((g->a + g->f + g_k[i] + g->w[g->g]), g_r[i]);
+	g->a = g->tmp;
 }
 
-int prepross(unsigned char *init_mg, size_t len, t_gen *g)
+int			prepross(unsigned char *init_mg, size_t len, t_gen *g)
 {
 	g->h0 = 0x67452301;
-    g->h1 = 0xefcdab89;
-    g->h2 = 0x98badcfe;
-    g->h3 = 0x10325476;
-    g->new_len = len + 1;
-    while(g->new_len%64!=56)
-    	g->new_len++;
-    if (!(g->msg = malloc(g->new_len + 64)))
+	g->h1 = 0xefcdab89;
+	g->h2 = 0x98badcfe;
+	g->h3 = 0x10325476;
+	g->new_len = len + 1;
+	while (g->new_len % 64 != 56)
+		g->new_len++;
+	if (!(g->msg = malloc(g->new_len + 64)))
 		return (-1);
 	g->msg = ft_bzero(g->msg, g->new_len + 64);
-    ft_strcpy((char*)g->msg, (const char *)init_mg);
+	ft_strcpy((char*)g->msg, (const char *)init_mg);
 	*(uint32_t*)(g->msg + len) = 0x80;
 	*(uint32_t*)(g->msg + g->new_len) = (uint32_t)(8 * len);
-    g->offset = 0;
-    return (0);
+	g->offset = 0;
+	return (0);
 }
 
-int md5(unsigned char *init_mg, size_t len, t_gen *g)
+int			md5(unsigned char *init_mg, size_t len, t_gen *g)
 {
 	int i;
 
-   	if(prepross(init_mg, len, g) == -1)
-   		return (-1);
-    while(g->offset<g->new_len) {
-        g->w = (uint32_t *) (g->msg + g->offset);
-        g->a = g->h0;
-        g->b = g->h1;
-        g->c = g->h2;
-        g->d = g->h3;
-       	i = -1;
-        while(++i<64) 
-         	md5_compress(g, i);   
-        g->h0 += g->a;
-        g->h1 += g->b;
-        g->h2 += g->c;
-        g->h3 += g->d;
- 		g->offset += 64;
-    }
-    free(g->msg);
-    return(0);
- }
+	if (prepross(init_mg, len, g) == -1)
+		return (-1);
+	while (g->offset < g->new_len)
+	{
+		g->w = (uint32_t *)(g->msg + g->offset);
+		g->a = g->h0;
+		g->b = g->h1;
+		g->c = g->h2;
+		g->d = g->h3;
+		i = -1;
+		while (++i < 64)
+			md5_compress(g, i);
+		g->h0 += g->a;
+		g->h1 += g->b;
+		g->h2 += g->c;
+		g->h3 += g->d;
+		g->offset += 64;
+	}
+	free(g->msg);
+	return (0);
+}

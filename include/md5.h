@@ -40,7 +40,7 @@ typedef struct		s_gen
 	uint32_t		h;
 	uint32_t		*w;
 	unsigned char	*msg;
-	uint32_t	*msg_32;
+	uint32_t		*msg_32;
 	int				i;
 	uint32_t		tmp;
 	uint32_t		bits_init_msg_len;
