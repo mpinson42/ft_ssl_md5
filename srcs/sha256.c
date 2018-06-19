@@ -126,5 +126,6 @@ int sha256(char *init_mg, size_t len, t_gen *g)
         free(g->w);
         i++;
     }
+    free(g->msg_32);
     return (0);
 }
