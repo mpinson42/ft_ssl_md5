@@ -110,7 +110,7 @@ int			no_such_file(t_gen *g, char **argv)
 	{
 		if (ft_strcmp(argv[1], "sha256") == 0)
 			ft_putstr("ft_ssl: sha256: ");
-		if (ft_strcmp(argv[1], "sha256") == 0)
+		if (ft_strcmp(argv[1], "sha224") == 0)
 			ft_putstr("ft_ssl: sha224: ");
 		else
 			ft_putstr("ft_ssl: md5: ");

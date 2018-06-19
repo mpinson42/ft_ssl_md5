@@ -33,8 +33,10 @@ const uint32_t g_k3[] = {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
 	0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-int			ft_prepross_sha224(unsigned char *init_msg, size_t len, t_gen *g)
+int sha224_prepross(char *init_mg, size_t len, t_gen *g)
 {
+	int i;
+
 	g->h0 = 0xc1059ed8;
 	g->h1 = 0x367cd507;
 	g->h2 = 0x3070dd17;
@@ -43,85 +45,89 @@ int			ft_prepross_sha224(unsigned char *init_msg, size_t len, t_gen *g)
 	g->h5 = 0x68581511;
 	g->h6 = 0x64f98fa7;
 	g->h7 = 0xbefa4fa4;
-	g->new_len = len + 1;
-	while (g->new_len % 64 != 60)
-		g->new_len++;
-	if (!(g->msg = malloc(g->new_len * 8 + 64)))
+    g->new_len = len * 8;
+    g->offset = 1 + ((g->new_len + 16 + 64) / 512);
+	if(!(g->msg_32 = malloc(16 * g->offset * 4)))
 		return (-1);
-	g->msg = ft_bzero(g->msg, g->new_len + 64);
-	ft_strcpy((char *)g->msg, (const char *)init_msg);
-	*(uint32_t*)(g->msg + len) = 0x80;
-	g->i = 0;
-	while (g->i < g->new_len / 4)
-	{
-		*(uint32_t*)&g->msg[g->i] = revers_uint32(*(uint32_t*)&g->msg[g->i]);
-		g->i += 4;
-	}
-	*(uint64_t*)(g->msg + g->new_len) = (uint64_t)(8 * len);
-	g->offset = 0;
-	return (0);
+    ft_bzero(g->msg_32, 16 * g->offset * 4);
+    ft_strcpy((char *)g->msg_32, init_mg);
+   	((char*)g->msg_32)[ft_strlen(init_mg)] = 0x80;
+   	i = 0;
+    while(i < (g->offset * 16) - 1)
+    {
+        g->msg_32[i] = revers_uint32(g->msg_32[i]);
+        i++;
+    }
+    g->msg_32[((g->offset * 512 - 64) / 32) + 1] = g->new_len;
+    return (0);
 }
 
-void		schedule_array_224(t_gen *g)
+void schedule_array224(t_gen *g, int i)
 {
-	g->w = (uint32_t *)g->msg + g->offset;
-	g->i = 15;
-	while (++g->i < 64)
-	{
-		g->tmp3 = rigthrotat(g->w[g->i - 15], 7) ^
-		rigthrotat(g->w[g->i - 15], 18) ^ (g->w[g->i - 15] >> 3);
-		g->tmp4 = rigthrotat(g->w[g->i - 2], 17) ^
-		rigthrotat(g->w[g->i - 2], 19) ^ (g->w[g->i - 2] >> 10);
-		g->w[g->i] = g->w[g->i - 16] + g->tmp3 + g->w[g->i - 7] + g->tmp4;
-	}
-	g->a = g->h0;
-	g->b = g->h1;
-	g->c = g->h2;
-	g->d = g->h3;
-	g->e = g->h4;
-	g->f = g->h5;
-	g->g = g->h6;
-	g->h = g->h7;
+	int j;
+
+	g->w = malloc(512);
+    ft_bzero(g->w, 512);
+    ft_memcpy(g->w, &g->msg_32[i * 16], 16 * 32);
+    j = 16;
+    while(j < 64)
+    {
+        g->tmp4   = rigthrotat(g->w[j-15], 7) ^ rigthrotat(g->w[j-15], 18) ^ (g->w[j-15] >> 3);
+        g->tmp   = rigthrotat(g->w[j-2], 17) ^ rigthrotat(g->w[j-2], 19) ^ (g->w[j-2] >> 10);
+        g->w[j] = g->w[j-16] + g->tmp4 + g->w[j-7] + g->tmp;
+        j++;
+    }
+    g->a = g->h0;
+    g->b = g->h1;
+    g->c = g->h2;
+    g->d = g->h3;
+    g->e = g->h4;
+    g->f = g->h5;
+    g->g = g->h6;
+    g->h = g->h7;
 }
 
-void		ft_compression_sha224(t_gen *g)
+void sha224_algo(t_gen *g, int j)
 {
-	g->tmp4 = rigthrotat(g->e, 6) ^ rigthrotat(g->e, 11) ^ rigthrotat(g->e, 25);
-	g->ch = (g->e & g->f) ^ ((~g->e) & g->g);
-	g->tmp1 = g->h + g->tmp4 + g->ch + g_k3[g->i] + g->w[g->i];
-	g->tmp3 = rigthrotat(g->a, 2) ^ rigthrotat(g->a, 13) ^ rigthrotat(g->a, 22);
-	g->maj = (g->a & g->b) ^ (g->a & g->c) ^ (g->b & g->c);
-	g->tmp2 = g->tmp3 + g->maj;
-	g->h = g->g;
-	g->g = g->f;
-	g->f = g->e;
-	g->e = g->d + g->tmp1;
-	g->d = g->c;
-	g->c = g->b;
-	g->b = g->a;
-	g->a = g->tmp1 + g->tmp2;
+	g->tmp = rigthrotat(g->e, 6) ^ rigthrotat(g->e, 11) ^ rigthrotat(g->e, 25);
+    g->tmp2 = (g->e & g->f) ^ ((~g->e) & g->g);
+    g->tmp3 = g->h + g->tmp + g->tmp2 + g_k3[j] + g->w[j];
+    g->tmp4 = rigthrotat(g->a, 2) ^ rigthrotat(g->a, 13) ^ rigthrotat(g->a, 22);
+    g->tmp5 = (g->a & g->b) ^ (g->a & g->c) ^ (g->b & g->c);
+    g->tmp6 = g->tmp4 + g->tmp5;
+    g->h = g->g;
+    g->g = g->f;
+    g->f = g->e;
+    g->e = g->d + g->tmp3;
+    g->d = g->c;
+    g->c = g->b;
+    g->b = g->a;
+    g->a = g->tmp3 + g->tmp6;
 }
 
-int			sha224(unsigned char *init_msg, size_t len, t_gen *g)
+int sha224(char *init_mg, size_t len, t_gen *g)
 {
-	if (ft_prepross_sha224(init_msg, len, g) == -1)
-		return (-1);
-	while (g->offset < g->new_len)
-	{
-		schedule_array_224(g);
-		g->i = -1;
-		while (++g->i < 64)
-			ft_compression_sha224(g);
-		g->h0 += g->a;
-		g->h1 += g->b;
-		g->h2 += g->c;
-		g->h3 += g->d;
-		g->h4 += g->e;
-		g->h5 += g->f;
-		g->h6 += g->g;
-		g->h7 += g->h;
-		g->offset += 64;
-	}
-	free(g->msg);
-	return (0);
+	int i;
+    int j;
+
+    sha224_prepross(init_mg, len, g);
+    i = 0;
+    while(i < g->offset)
+    {
+    	schedule_array224(g, i);
+        j = -1;
+        while(++j < 64)
+            sha224_algo(g, j);
+        g->h0 += g->a;
+        g->h1 += g->b;
+        g->h2 += g->c;
+        g->h3 += g->d;
+        g->h4 += g->e;
+        g->h5 += g->f;
+        g->h6 += g->g;
+        g->h7 += g->h;
+        free(g->w);
+        i++;
+    }
+    return (0);
 }

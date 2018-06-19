@@ -66,7 +66,7 @@ void		go_sha256(char *std, t_gen *g)
 {
 	char	*tmp;
 
-	if (sha256((uint8_t *)std, ft_strlen(std), g) == -1)
+	if (sha256(std, ft_strlen(std), g) == -1)
 		return ;
 	tmp = unsigned_itoa_base(g->h0, 16);
 	add0(tmp);
@@ -113,7 +113,7 @@ void		go_sha224(char *std, t_gen *g)
 {
 	char	*tmp;
 
-	if (sha224((uint8_t *)std, ft_strlen(std), g) == -1)
+	if (sha224(std, ft_strlen(std), g) == -1)
 		return ;
 	tmp = unsigned_itoa_base(g->h0, 16);
 	add0(tmp);

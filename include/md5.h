@@ -40,6 +40,7 @@ typedef struct		s_gen
 	uint32_t		h;
 	uint32_t		*w;
 	unsigned char	*msg;
+	uint32_t	*msg_32;
 	int				i;
 	uint32_t		tmp;
 	uint32_t		bits_init_msg_len;
@@ -52,6 +53,8 @@ typedef struct		s_gen
 	uint32_t		tmp2;
 	uint32_t		tmp3;
 	uint32_t		tmp4;
+	uint32_t		tmp5;
+	uint32_t		tmp6;
 	uint32_t		maj;
 	uint32_t		ch;
 	char			*stdin;
@@ -61,7 +64,7 @@ typedef struct		s_gen
 }					t_gen;
 
 int					md5(unsigned char *init_msg, size_t len, t_gen *g);
-int					sha256(uint8_t *init_msg, size_t len, t_gen *g);
+int					sha256(char *init_msg, size_t len, t_gen *g);
 uint32_t			revers_uint32(uint32_t n);
 uint64_t			revers_uint64(uint64_t n);
 char				*add0(char *str);
@@ -76,7 +79,7 @@ void				rotate_s(t_gen *g, char **argv);
 void				no_ro_s(t_gen *g, char **argv);
 void				pars_entre(t_gen *g, int argc, char **argv);
 void				ft_bonus_ssl(t_gen *g, int confirm, char *red);
-int					sha224(unsigned char *init_msg, size_t len, t_gen *g);
+int					sha224(char *init_msg, size_t len, t_gen *g);
 uint32_t			rigthrotat(uint32_t x, uint32_t n);
 void				go_sha224(char *std, t_gen *g);
 void				escap_norm(char *red);
